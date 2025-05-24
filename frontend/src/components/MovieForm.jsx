@@ -1,83 +1,53 @@
-import React, { useState, useEffect } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+// src/components/MovieForm.jsx
+import React, { useState } from "react";
 
-const MovieForm = ({ onAdd, onUpdate, editingMovie }) => {
-  const [form, setForm] = useState({ title: "", genre: "", year: "" });
-
-  useEffect(() => {
-    if (editingMovie) {
-      setForm({
-        title: editingMovie.title,
-        genre: editingMovie.genre,
-        year: editingMovie.year,
-      });
-    } else {
-      setForm({ title: "", genre: "", year: "" });
-    }
-  }, [editingMovie]);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+const MovieForm = ({ onAdd }) => {
+  const [title, setTitle] = useState("");
+  const [genre, setGenre] = useState("");
+  const [year, setYear] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (editingMovie) {
-      onUpdate(editingMovie._id, form);
-    } else {
-      onAdd(form);
-    }
-    setForm({ title: "", genre: "", year: "" });
+    if (!title || !genre || !year) return;
+    onAdd({ title, genre, year, watched: false });
+    setTitle("");
+    setGenre("");
+    setYear("");
   };
 
   return (
-    <Card className="mb-4 shadow">
-      <Card.Body>
-        <h5 className="text-center mb-3">
-          {editingMovie ? "✏️ Edit Movie" : "🎥 Add a Movie"}
-        </h5>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Label>Title</Form.Label>
-            <Form.Control
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              required
-              placeholder="e.g. Interstellar"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Genre</Form.Label>
-            <Form.Control
-              type="text"
-              name="genre"
-              value={form.genre}
-              onChange={handleChange}
-              required
-              placeholder="e.g. Sci-Fi"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Year</Form.Label>
-            <Form.Control
-              type="number"
-              name="year"
-              value={form.year}
-              onChange={handleChange}
-              required
-              placeholder="e.g. 2014"
-            />
-          </Form.Group>
-          <div className="d-grid">
-            <Button variant={editingMovie ? "warning" : "primary"} type="submit">
-              {editingMovie ? "Update Movie" : "Add Movie"}
-            </Button>
-          </div>
-        </Form>
-      </Card.Body>
-    </Card>
+    <form onSubmit={handleSubmit} className="mb-4 row g-2">
+      <div className="col-md-4">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Movie Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </div>
+      <div className="col-md-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Genre"
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
+        />
+      </div>
+      <div className="col-md-3">
+        <input
+          type="number"
+          className="form-control"
+          placeholder="Year"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+        />
+      </div>
+      <div className="col-md-2">
+        <button type="submit" className="btn btn-success w-100">Add Movie</button>
+      </div>
+    </form>
   );
 };
 
